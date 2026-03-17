@@ -1,0 +1,131 @@
+import { useState } from "react";
+import { Card, CardContent } from "@/components/ui/card";
+import { Button } from "@/components/ui/button";
+import { Switch } from "@/components/ui/switch";
+import { BarChart, Bar, XAxis, YAxis, Tooltip, ResponsiveContainer } from "recharts";
+import { Home, Settings, Clock, BarChart2 } from "lucide-react";
+
+export default function App() {
+  const [tab, setTab] = useState("estadisticas");
+
+  return (
+    <div className="min-h-screen bg-gray-100 flex flex-col">
+      <div className="flex-1 p-4 overflow-auto">
+        {tab === "estado" && <Estado />}
+        {tab === "config" && <Config />}
+        {tab === "historial" && <Historial />}
+        {tab === "estadisticas" && <Estadisticas />}
+      </div>
+
+      <nav className="bg-white shadow flex justify-around p-2">
+        <Tab icon={<Home />} label="Estado" onClick={() => setTab("estado")} />
+        <Tab icon={<Clock />} label="Historial" onClick={() => setTab("historial")} />
+        <Tab icon={<BarChart2 />} label="Estadísticas" onClick={() => setTab("estadisticas")} />
+        <Tab icon={<Settings />} label="Ajustes" onClick={() => setTab("config")} />
+      </nav>
+    </div>
+  );
+}
+
+function Tab({ icon, label, onClick }) {
+  return (
+    <button onClick={onClick} className="flex flex-col items-center text-xs">
+      {icon}
+      {label}
+    </button>
+  );
+}
+
+function Estado() {
+  return (
+    <div className="space-y-4">
+      <Card><CardContent className="p-4">Sensor: Conectado</CardContent></Card>
+      <Card><CardContent className="p-4">Batería: 78%</CardContent></Card>
+      <Card><CardContent className="p-4">Última actividad: hace 2 min</CardContent></Card>
+      <Card><CardContent className="p-4">Ubicación: Lima, Perú</CardContent></Card>
+      <Button className="w-full">Reconectar</Button>
+    </div>
+  );
+}
+
+function Config() {
+  return (
+    <div className="space-y-4">
+      <Card>
+        <CardContent className="p-4 space-y-2">
+          <div>Sensibilidad</div>
+          <select className="w-full border rounded p-2">
+            <option>Baja</option>
+            <option>Media</option>
+            <option>Alta</option>
+          </select>
+        </CardContent>
+      </Card>
+
+      <Setting label="Notificaciones" />
+      <Setting label="Alertas batería" />
+      <Setting label="Modo ahorro" />
+    </div>
+  );
+}
+
+function Setting({ label }) {
+  return (
+    <Card>
+      <CardContent className="p-4 flex justify-between">
+        {label}
+        <Switch />
+      </CardContent>
+    </Card>
+  );
+}
+
+function Historial() {
+  const viajes = [
+    { nombre: "Viaje al Centro", tiempo: "45 min", distancia: "12 km", giros: 26 },
+    { nombre: "Supermercado", tiempo: "32 min", distancia: "8.5 km", giros: 18 }
+  ];
+
+  return (
+    <div className="space-y-4">
+      {viajes.map((v, i) => (
+        <Card key={i}>
+          <CardContent className="p-4">
+            <div className="font-bold">{v.nombre}</div>
+            <div className="text-sm text-gray-500">{v.tiempo} • {v.distancia}</div>
+            <div className="mt-2">Giros: {v.giros}</div>
+          </CardContent>
+        </Card>
+      ))}
+    </div>
+  );
+}
+
+function Estadisticas() {
+  const data = [
+    { name: "Lun", giros: 10 },
+    { name: "Mar", giros: 15 },
+    { name: "Mié", giros: 8 }
+  ];
+
+  return (
+    <div className="space-y-4">
+      <Card><CardContent className="p-4">Total giros: 120</CardContent></Card>
+      <Card><CardContent className="p-4">Distancia total: 230 km</CardContent></Card>
+      <Card><CardContent className="p-4">Tiempo total: 18 h</CardContent></Card>
+
+      <Card>
+        <CardContent className="p-4 h-64">
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart data={data}>
+              <XAxis dataKey="name" />
+              <YAxis />
+              <Tooltip />
+              <Bar dataKey="giros" />
+            </BarChart>
+          </ResponsiveContainer>
+        </CardContent>
+      </Card>
+    </div>
+  );
+}
