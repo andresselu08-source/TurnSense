@@ -1,0 +1,120 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Inteligente</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100">
+
+<div id="app" class="max-w-md mx-auto min-h-screen flex flex-col">
+
+  <!-- CONTENIDO -->
+  <div id="content" class="flex-1 p-4 overflow-y-auto"></div>
+
+  <!-- NAVBAR -->
+  <div class="bg-white shadow flex justify-around p-2 text-xs">
+    <button onclick="render('estado')">Estado</button>
+    <button onclick="render('historial')">Historial</button>
+    <button onclick="render('estadisticas')">Estadísticas</button>
+    <button onclick="render('config')">Ajustes</button>
+  </div>
+</div>
+
+<script>
+function render(tab){
+  const c = document.getElementById('content');
+
+  if(tab==='estado'){
+    c.innerHTML = `
+      <h1 class="text-xl font-bold mb-4">Estado del Sensor</h1>
+      ${card('Conexión', 'Conectado')}
+      ${card('Batería', '78%')}
+      ${card('Última actividad', 'Hace 2 min')}
+      ${card('Ubicación', 'Lima, Perú')}
+      <button class="w-full bg-blue-500 text-white p-3 rounded-xl">Reconectar</button>
+    `;
+  }
+
+  if(tab==='config'){
+    c.innerHTML = `
+      <h1 class="text-xl font-bold mb-4">Configuración</h1>
+      <div class="bg-white p-4 rounded-xl mb-3">
+        <label>Sensibilidad</label>
+        <select class="w-full border p-2 rounded mt-2">
+          <option>Baja</option>
+          <option selected>Media</option>
+          <option>Alta</option>
+        </select>
+      </div>
+      ${toggle('Notificaciones')}
+      ${toggle('Alertas batería baja')}
+      ${toggle('Modo ahorro')}
+    `;
+  }
+
+  if(tab==='historial'){
+    c.innerHTML = `
+      <h1 class="text-xl font-bold mb-4">Historial de Viajes</h1>
+      ${viaje('Viaje al Centro','45 min','12 km','26 giros')}
+      ${viaje('Supermercado','32 min','8.5 km','18 giros')}
+      ${viaje('Ruta Matutina','20 min','5 km','12 giros')}
+    `;
+  }
+
+  if(tab==='estadisticas'){
+    c.innerHTML = `
+      <h1 class="text-xl font-bold mb-4">Estadísticas</h1>
+      ${card('Total giros','120')}
+      ${card('Distancia total','230 km')}
+      ${card('Tiempo total','18 h')}
+      <canvas id="chart"></canvas>
+    `;
+
+    setTimeout(()=>{
+      new Chart(document.getElementById('chart'),{
+        type:'bar',
+        data:{
+          labels:['Lun','Mar','Mié','Jue','Vie'],
+          datasets:[{label:'Giros',data:[10,15,8,20,12]}]
+        }
+      });
+    },100);
+  }
+}
+
+function card(title,value){
+  return `
+    <div class="bg-white p-4 rounded-xl mb-3">
+      <div class="text-gray-500 text-sm">${title}</div>
+      <div class="font-bold">${value}</div>
+    </div>
+  `;
+}
+
+function toggle(label){
+  return `
+    <div class="bg-white p-4 rounded-xl mb-3 flex justify-between">
+      ${label}
+      <input type="checkbox" checked>
+    </div>
+  `;
+}
+
+function viaje(nombre,tiempo,distancia,giros){
+  return `
+    <div class="bg-white p-4 rounded-xl mb-3">
+      <div class="font-bold">${nombre}</div>
+      <div class="text-sm text-gray-500">${tiempo} • ${distancia}</div>
+      <div class="mt-2">${giros}</div>
+    </div>
+  `;
+}
+
+render('estadisticas');
+</script>
+
+</body>
+</html>
