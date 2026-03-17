@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>TurnSense AI</title>
+
+<style>
+    body {
+        margin: 0;
+        font-family: Arial, sans-serif;
+        background: #0f172a;
+        color: white;
+    }
+
+    header {
+        padding: 20px;
+        text-align: center;
+        background: #020617;
+        font-size: 24px;
+        font-weight: bold;
+    }
+
+    .hero {
+        text-align: center;
+        padding: 80px 20px;
+    }
+
+    .hero h1 {
+        font-size: 48px;
+        margin-bottom: 20px;
+    }
+
+    .hero p {
+        font-size: 18px;
+        color: #94a3b8;
+    }
+
+    .btn {
+        margin-top: 20px;
+        padding: 15px 30px;
+        background: #22c55e;
+        color: black;
+        border: none;
+        border-radius: 10px;
+        font-size: 16px;
+        cursor: pointer;
+    }
+
+    .section {
+        padding: 60px 20px;
+        text-align: center;
+    }
+
+    .cards {
+        display: flex;
+        flex-wrap: wrap;
+        justify-content: center;
+        gap: 20px;
+    }
+
+    .card {
+        background: #1e293b;
+        padding: 20px;
+        border-radius: 15px;
+        width: 250px;
+    }
+
+    footer {
+        text-align: center;
+        padding: 20px;
+        background: #020617;
+        color: #64748b;
+    }
+</style>
+</head>
+
+<body>
+
+<header>
+🚗 TurnSense AI
+</header>
+
+<section class="hero">
+    <h1>Direccionales Inteligentes Automáticas</h1>
+    <p>Detecta giros con sensores y GPS para activar direccionales automáticamente</p>
+    <button class="btn" onclick="iniciarSimulacion()">Probar Demo</button>
+</section>
+
+<section class="section">
+    <h2>¿Cómo funciona?</h2>
+    <div class="cards">
+        <div class="card">📡 Usa GPS en tiempo real</div>
+        <div class="card">🧭 Detecta giros del dispositivo</div>
+        <div class="card">⚡ Activa direccionales automáticamente</div>
+    </div>
+</section>
+
+<section class="section">
+    <h2>Simulación</h2>
+    <p id="estado">Esperando movimiento...</p>
+</section>
+
+<footer>
+TurnSense AI © 2026
+</footer>
+
+<script>
+let lastGamma = 0;
+
+function iniciarSimulacion() {
+    alert("Simulación iniciada. Gira tu celular.");
+
+    if (window.DeviceOrientationEvent) {
+        window.addEventListener("deviceorientation", function(event) {
+            let gamma = event.gamma; // izquierda/derecha
+            let diff = gamma - lastGamma;
+
+            if (diff > 5) {
+                activarDerecha();
+            } else if (diff < -5) {
+                activarIzquierda();
+            }
+
+            lastGamma = gamma;
+        });
+    } else {
+        alert("Tu dispositivo no soporta sensores.");
+    }
+}
+
+function activarDerecha() {
+    document.getElementById("estado").innerText = "➡️ Direccional DERECHA activada";
+    console.log("Derecha");
+}
+
+function activarIzquierda() {
+    document.getElementById("estado").innerText = "⬅️ Direccional IZQUIERDA activada";
+    console.log("Izquierda");
+}
+</script>
+
+</body>
+</html>
