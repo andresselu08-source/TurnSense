@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sensor Inteligente</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body class="bg-gray-100 flex justify-center">
+
+<div class="w-[360px] h-screen bg-white shadow-xl flex flex-col rounded-2xl overflow-hidden">
+
+  <!-- HEADER -->
+  <div class="p-4 border-b">
+    <h1 id="title" class="text-lg font-bold">Estadísticas</h1>
+  </div>
+
+  <!-- CONTENT -->
+  <div id="content" class="flex-1 overflow-y-auto p-4 space-y-4"></div>
+
+  <!-- NAVBAR -->
+  <div class="bg-white border-t flex justify-around p-2 text-xs">
+    <button onclick="render('estado')">Estado</button>
+    <button onclick="render('historial')">Historial</button>
+    <button onclick="render('estadisticas')" class="font-bold">Estadísticas</button>
+    <button onclick="render('config')">Ajustes</button>
+  </div>
+</div>
+
+<script>
+function render(tab){
+  const c = document.getElementById('content');
+  const t = document.getElementById('title');
+
+  if(tab==='estado'){
+    t.innerText = 'Estado del Sensor';
+    c.innerHTML = `
+      ${cardBig('Conectado','Sensor activo','🟢')}
+      ${card('Batería','78%')}
+      ${card('Última actividad','Hace 2 min')}
+      ${card('Ubicación','Lima, Perú')}
+      <button class="w-full bg-black text-white p-3 rounded-xl">Reconectar</button>
+    `;
+  }
+
+  if(tab==='config'){
+    t.innerText = 'Configuración';
+    c.innerHTML = `
+      <div class="bg-gray-50 p-4 rounded-xl">
+        <div class="text-sm mb-2">Sensibilidad</div>
+        <select class="w-full p-2 rounded border">
+          <option>Baja</option>
+          <option selected>Media</option>
+          <option>Alta</option>
+        </select>
+      </div>
+
+      ${toggle('Notificaciones de giros')}
+      ${toggle('Alertas batería baja')}
+      ${toggle('Modo ahorro de energía')}
+    `;
+  }
+
+  if(tab==='historial'){
+    t.innerText = 'Historial de Viajes';
+    c.innerHTML = `
+      ${viajeCard('Viaje al Centro','Hoy, 10:30 AM','45 min','12 km',14,12,26)}
+      ${viajeCard('Supermercado','Ayer, 5:15 PM','32 min','8.5 km',8,10,18)}
+      ${viajeCard('Ruta Matutina','Hoy, 7:00 AM','20 min','5 km',6,6,12)}
+    `;
+  }
+
+  if(tab==='estadisticas'){
+    t.innerText = 'Estadísticas';
+    c.innerHTML = `
+      <div class="grid grid-cols-3 gap-2">
+        ${miniCard('Giros','120')}
+        ${miniCard('Km','230')}
+        ${miniCard('Horas','18')}
+      </div>
+
+      <div class="bg-gray-50 p-4 rounded-xl">
+        <canvas id="chart"></canvas>
+      </div>
+    `;
+
+    setTimeout(()=>{
+      new Chart(document.getElementById('chart'),{
+        type:'line',
+        data:{
+          labels:['Lun','Mar','Mié','Jue','Vie'],
+          datasets:[{label:'Giros',data:[10,15,8,20,12],fill:true}]
+        }
+      });
+    },100);
+  }
+}
+
+function card(title,value){
+  return `
+    <div class="bg-gray-50 p-4 rounded-xl">
+      <div class="text-xs text-gray-500">${title}</div>
+      <div class="font-semibold">${value}</div>
+    </div>
+  `;
+}
+
+function miniCard(title,value){
+  return `
+    <div class="bg-gray-50 p-3 rounded-xl text-center">
+      <div class="text-xs text-gray-500">${title}</div>
+      <div class="font-bold">${value}</div>
+    </div>
+  `;
+}
+
+function cardBig(title,subtitle,icon){
+  return `
+    <div class="bg-gray-50 p-4 rounded-xl flex items-center justify-between">
+      <div>
+        <div class="font-bold">${title}</div>
+        <div class="text-xs text-gray-500">${subtitle}</div>
+      </div>
+      <div class="text-xl">${icon}</div>
+    </div>
+  `;
+}
+
+function toggle(label){
+  return `
+    <div class="bg-gray-50 p-4 rounded-xl flex justify-between items-center">
+      ${label}
+      <input type="checkbox" checked class="w-5 h-5">
+    </div>
+  `;
+}
+
+function viajeCard(nombre,fecha,tiempo,distancia,izq,der,total){
+  return `
+    <div class="bg-gray-50 p-4 rounded-xl space-y-2">
+      <div class="flex justify-between">
+        <div class="font-semibold">${nombre}</div>
+        <div class="text-xs text-gray-400">⋮</div>
+      </div>
+      <div class="text-xs text-gray-500">${fecha}</div>
+      <div class="flex justify-between text-sm">
+        <span>⏱ ${tiempo}</span>
+        <span>📍 ${distancia}</span>
+      </div>
+      <div class="flex justify-between text-sm mt-2">
+        <div>⬅ ${izq}</div>
+        <div>➡ ${der}</div>
+        <div class="bg-gray-200 px-2 py-1 rounded-full text-xs">${total} giros</div>
+      </div>
+    </div>
+  `;
+}
+
+render('estadisticas');
+</script>
+
+</body>
+</html>
